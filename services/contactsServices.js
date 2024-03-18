@@ -18,7 +18,7 @@ export const getContactById = async (contactId) => {
   return result || null;
 };
 
-export const addContact = async (name, email, phone) => {
+export const addContact = async ({ name, email, phone }) => {
   //   const { nanoid } = await import("nanoid");
   const contactsList = await listContacts();
   const newContact = {

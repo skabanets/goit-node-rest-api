@@ -21,11 +21,16 @@ const getOneContact = async (req, res) => {
 
 export const deleteContact = (req, res) => {};
 
-export const createContact = (req, res) => {};
+const createContact = async (req, res) => {
+  const result = await contactsService.addContact(req.body);
+
+  res.status(201).json(result);
+};
 
 export const updateContact = (req, res) => {};
 
 export default {
   getAllContacts: ctrlWrapper(getAllContacts),
   getOneContact: ctrlWrapper(getOneContact),
+  createContact: ctrlWrapper(createContact),
 };
