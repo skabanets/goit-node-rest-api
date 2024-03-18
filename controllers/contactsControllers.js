@@ -16,5 +16,5 @@ export const createContact = (req, res) => {};
 export const updateContact = (req, res) => {};
 
 export default {
-  getAllContacts: ctrlWrapper,
+  getAllContacts: ctrlWrapper(getAllContacts),
 };
