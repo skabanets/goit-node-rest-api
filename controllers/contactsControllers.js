@@ -34,11 +34,21 @@ const updateContact = async (req, res) => {
   res.json(result);
 };
 
-// export const deleteContact = (req, res) => {};
+const deleteContact = async (req, res) => {
+  const { id } = req.params;
+  const result = await Contact.findByIdAndDelete(id);
+
+  if (!result) {
+    throw HttpError(404);
+  }
+
+  res.status(204).json();
+};
 
 export default {
   getAllContact: ctrlWrapper(getAllContacts),
   getOneContact: ctrlWrapper(getOneContact),
   createContact: ctrlWrapper(createContact),
   updateContact: ctrlWrapper(updateContact),
+  deleteContact: ctrlWrapper(deleteContact),
 };
