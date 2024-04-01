@@ -5,7 +5,8 @@ import { validateBody } from "../middlewares/validateBody.js";
 import { isValidId } from "../middlewares/isValidid.js";
 
 import {
-  addContactSchema,
+  createContactSchema,
+  updateContactSchema,
   updateFavoriteSchema,
 } from "../schemas/contactsSchemas.js";
 
@@ -17,14 +18,14 @@ contactsRouter.get("/:id", isValidId, contactsControllers.getOneContact);
 
 contactsRouter.post(
   "/",
-  validateBody(addContactSchema),
+  validateBody(createContactSchema),
   contactsControllers.createContact
 );
 
 contactsRouter.put(
   "/:id",
   isValidId,
-  validateBody(addContactSchema),
+  validateBody(updateContactSchema),
   contactsControllers.updateContact
 );
 
