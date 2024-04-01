@@ -5,8 +5,8 @@ import { validateBody } from "../middlewares/validateBody.js";
 import { isValidId } from "../middlewares/isValidid.js";
 
 import {
-  createContactSchema,
-  updateContactSchema,
+  addContactSchema,
+  updateFavoriteSchema,
 } from "../schemas/contactsSchemas.js";
 
 const contactsRouter = express.Router();
@@ -17,15 +17,22 @@ contactsRouter.get("/:id", isValidId, contactsControllers.getOneContact);
 
 contactsRouter.post(
   "/",
-  validateBody(createContactSchema),
+  validateBody(addContactSchema),
   contactsControllers.createContact
 );
 
 contactsRouter.put(
   "/:id",
   isValidId,
-  validateBody(updateContactSchema),
+  validateBody(addContactSchema),
   contactsControllers.updateContact
+);
+
+contactsRouter.patch(
+  "/:id/favorite",
+  isValidId,
+  validateBody(updateFavoriteSchema),
+  contactsControllers.updateFavorite
 );
 
 contactsRouter.delete("/:id", isValidId, contactsControllers.deleteContact);

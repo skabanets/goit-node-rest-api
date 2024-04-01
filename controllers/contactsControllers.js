@@ -34,6 +34,17 @@ const updateContact = async (req, res) => {
   res.json(result);
 };
 
+const updateFavorite = async (req, res) => {
+  const { id } = req.params;
+  const result = await Contact.findByIdAndUpdate(id, req.body, { new: true });
+
+  if (!result) {
+    throw HttpError(404);
+  }
+
+  res.json(result);
+};
+
 const deleteContact = async (req, res) => {
   const { id } = req.params;
   const result = await Contact.findByIdAndDelete(id);
@@ -50,5 +61,6 @@ export default {
   getOneContact: ctrlWrapper(getOneContact),
   createContact: ctrlWrapper(createContact),
   updateContact: ctrlWrapper(updateContact),
+  updateFavorite: ctrlWrapper(updateFavorite),
   deleteContact: ctrlWrapper(deleteContact),
 };
