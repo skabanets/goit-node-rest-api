@@ -1,7 +1,7 @@
 import { ctrlWrapper } from "../helpers/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 import { User } from "../models/User.js";
-import { findUser } from "../services/usersServices.js";
+import { createUser, findUser } from "../services/usersServices.js";
 
 const register = async (req, res) => {
   const { email } = req.body;
@@ -11,7 +11,7 @@ const register = async (req, res) => {
     throw HttpError(409, "Email in use");
   }
 
-  const newUser = await User.create(req.body);
+  const newUser = await createUser(req.body);
 
   res.status(201).json({
     email: newUser.email,
