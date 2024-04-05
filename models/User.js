@@ -1,6 +1,6 @@
-import { Schema } from "mongoose";
-import { emailRegexp } from "../constants/user-constants";
-import { handleMongooseError } from "../helpers/handleMongooseError";
+import { Schema, model } from "mongoose";
+import { emailRegexp } from "../constants/user-constants.js";
+import { handleMongooseError } from "../helpers/handleMongooseError.js";
 
 const userSchema = new Schema(
   {
@@ -27,6 +27,6 @@ const userSchema = new Schema(
   { versionKey: false, timestamps: true }
 );
 
-contactSchema.post("save", handleMongooseError);
+userSchema.post("save", handleMongooseError);
 
 export const User = model("user", userSchema);

@@ -10,7 +10,7 @@ import {
   updateFavoriteSchema,
 } from "../schemas/contactsSchemas.js";
 
-const contactsRouter = express.Router();
+export const contactsRouter = express.Router();
 
 contactsRouter.get("/", contactsControllers.getAllContact);
 
@@ -37,5 +37,3 @@ contactsRouter.patch(
 );
 
 contactsRouter.delete("/:id", isValidId, contactsControllers.deleteContact);
-
-export default contactsRouter;
