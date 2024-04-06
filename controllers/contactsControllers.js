@@ -9,13 +9,21 @@ import {
 } from "../services/contactsServices.js";
 
 const getAllContacts = async (req, res) => {
-  const result = await getContacts();
+  const { _id: owner } = req.user;
+  const { page = 1, limit = 10, favorite } = req.query;
+  const filter = favorite ? { owner, favorite } : { owner };
+  const skip = (page - 1) * limit;
+
+  const result = await getContacts({ ...filter }, { skip, limit });
+
   res.json(result);
 };
 
 const getOneContact = async (req, res) => {
   const { id } = req.params;
-  const result = await getContactById(id);
+  const { _id: owner } = req.user;
+
+  const result = await getContactById({ _id: id, owner });
 
   if (!result) {
     throw HttpError(404);
@@ -25,13 +33,16 @@ const getOneContact = async (req, res) => {
 };
 
 const createContact = async (req, res) => {
-  const result = await addContact(req.body);
+  const { _id: owner } = req.user;
+  const result = await addContact({ ...req.body, owner });
+
   res.status(201).json(result);
 };
 
 const updateContact = async (req, res) => {
   const { id } = req.params;
-  const result = await updateContactById(id, req.body);
+  const { _id: owner } = req.user;
+  const result = await updateContactById({ _id: id, owner }, req.body);
 
   if (!result) {
     throw HttpError(404);
@@ -42,7 +53,9 @@ const updateContact = async (req, res) => {
 
 const updateFavorite = async (req, res) => {
   const { id } = req.params;
-  const result = await updateContactById(id, req.body);
+  const { _id: owner } = req.user;
+
+  const result = await updateContactById({ _id: id, owner }, req.body);
 
   if (!result) {
     throw HttpError(404);
@@ -53,7 +66,9 @@ const updateFavorite = async (req, res) => {
 
 const deleteContact = async (req, res) => {
   const { id } = req.params;
-  const result = await removeContact(id);
+  const { _id: owner } = req.user;
+
+  const result = await removeContact({ _id: id, owner });
 
   if (!result) {
     throw HttpError(404);
