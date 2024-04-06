@@ -3,6 +3,7 @@ import usersControllers from "../controllers/usersControllers.js";
 
 import { validateBody } from "../middlewares/validateBody.js";
 import { userSigninSchema, userSignupSchema } from "../schemas/usersSchemas.js";
+import { authenticate } from "../middlewares/authenticate.js";
 
 export const usersRouter = express.Router();
 
@@ -17,3 +18,5 @@ usersRouter.post(
   validateBody(userSigninSchema),
   usersControllers.login
 );
+
+usersRouter.get("/current", authenticate, usersControllers.getCurrent);
