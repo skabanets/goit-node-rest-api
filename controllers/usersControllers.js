@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import gravatar from "gravatar";
 
 import { ctrlWrapper } from "../helpers/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
@@ -19,7 +20,8 @@ const register = async (req, res) => {
     throw HttpError(409, "Email in use");
   }
 
-  const newUser = await createUser(req.body);
+  const avatarURL = gravatar.url(email);
+  const newUser = await createUser({ ...req.body, avatarURL });
 
   res.status(201).json({
     email: newUser.email,
