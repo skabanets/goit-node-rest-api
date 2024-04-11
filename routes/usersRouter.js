@@ -8,6 +8,7 @@ import {
   userSignupSchema,
 } from "../schemas/usersSchemas.js";
 import { authenticate } from "../middlewares/authenticate.js";
+import { upload } from "../middlewares/upload.js";
 
 export const usersRouter = express.Router();
 
@@ -32,4 +33,11 @@ usersRouter.patch(
   authenticate,
   validateBody(updateSubscriptionSchema),
   usersControllers.updateSubscription
+);
+
+usersRouter.patch(
+  "/avatars",
+  authenticate,
+  upload.single("avatar"),
+  usersControllers.updateAvatar
 );

@@ -8,7 +8,10 @@ export const createUser = async (data) => {
   const salt = await bcrypt.genSalt(10);
   const hashPassword = await bcrypt.hash(data.password, salt);
 
-  const newUser = User.create({ ...data, password: hashPassword });
+  const newUser = await User.create({
+    ...data,
+    password: hashPassword,
+  });
   return newUser;
 };
 
