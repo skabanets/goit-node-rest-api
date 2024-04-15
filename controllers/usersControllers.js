@@ -3,6 +3,7 @@ import gravatar from "gravatar";
 import fs from "fs/promises";
 import path from "path";
 import Jimp from "jimp";
+import { nanoid } from "nanoid";
 
 import { ctrlWrapper } from "../helpers/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
@@ -12,8 +13,9 @@ import {
   updateUser,
   validatePassword,
 } from "../services/usersServices.js";
+import { sendEmail } from "../helpers/sendEmail.js";
 
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET, BASE_URL } = process.env;
 
 const register = async (req, res) => {
   const { email } = req.body;
@@ -24,12 +26,38 @@ const register = async (req, res) => {
   }
 
   const avatarURL = gravatar.url(email);
-  const newUser = await createUser({ ...req.body, avatarURL });
+  const verificationToken = nanoid();
+  const newUser = await createUser({
+    ...req.body,
+    avatarURL,
+    verificationToken,
+  });
+
+  const verifyEmail = {
+    to: email,
+    subject: "Verify email",
+    html: `<a target = "_blank" href="${BASE_URL}/api/users/verify/${verificationToken}">Click verify Email</a>`,
+  };
+
+  await sendEmail(verifyEmail);
 
   res.status(201).json({
     email: newUser.email,
     subscription: newUser.subscription,
   });
+};
+
+const verifyEmail = async (req, res) => {
+  const { verificationToken } = req.params;
+  const user = await findUser({ verificationToken });
+
+  if (!user) {
+    throw HttpError(404, "User not found");
+  }
+
+  await updateUser(user._id, { verify: true, verificationToken: "" });
+
+  res.json({ message: "Verification successful" });
 };
 
 const login = async (req, res) => {
@@ -109,6 +137,7 @@ const updateAvatar = async (req, res) => {
 
 export default {
   register: ctrlWrapper(register),
+  verifyEmail: ctrlWrapper(verifyEmail),
   login: ctrlWrapper(login),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
