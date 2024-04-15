@@ -60,6 +60,31 @@ const verifyEmail = async (req, res) => {
   res.json({ message: "Verification successful" });
 };
 
+const resendVerifyEmail = async (req, res) => {
+  const { email } = req.body;
+  const user = await findUser({ email });
+
+  if (!user) {
+    throw HttpError(401, "User not found");
+  }
+
+  if (user.verify) {
+    throw HttpError(400, "Verification has already been passed");
+  }
+
+  const verifyEmail = {
+    to: email,
+    subject: "Verify email",
+    html: `<a target = "_blank" href="${BASE_URL}/api/users/verify/${user.verificationToken}">Click verify Email</a>`,
+  };
+
+  await sendEmail(verifyEmail);
+
+  res.json({
+    message: "Verification email sent",
+  });
+};
+
 const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await findUser({ email });
@@ -138,6 +163,7 @@ const updateAvatar = async (req, res) => {
 export default {
   register: ctrlWrapper(register),
   verifyEmail: ctrlWrapper(verifyEmail),
+  resendVerifyEmail: ctrlWrapper(resendVerifyEmail),
   login: ctrlWrapper(login),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),

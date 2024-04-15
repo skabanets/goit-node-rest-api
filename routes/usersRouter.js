@@ -3,6 +3,7 @@ import usersControllers from "../controllers/usersControllers.js";
 
 import { validateBody } from "../middlewares/validateBody.js";
 import {
+  emailSchema,
   updateSubscriptionSchema,
   userSigninSchema,
   userSignupSchema,
@@ -19,6 +20,12 @@ usersRouter.post(
 );
 
 usersRouter.get("/verify/:verificationToken", usersControllers.verifyEmail);
+
+usersRouter.post(
+  "/verify",
+  validateBody(emailSchema),
+  usersControllers.resendVerifyEmail
+);
 
 usersRouter.post(
   "/login",
